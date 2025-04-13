@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webapp Calctest</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;    
+        }
+        .card {
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            width: 200px;
+        }
+        .question {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .options {
+            display: grid;
+        }
+        .option-btn {
+            padding: 10px;
+            font-size: 18px;
+        }
+        .feedback {
+            margin-top: 15px;
+            font-size: 20px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>Resolver</h1>
+    <div class="question" id="question"></div>
+    <div class="options" id="options"></div>
+    <div class="feedback" id="feedback"></div>
+</div>
+
+<script>
+    function generateQuestion() {
+        const a = Math.floor(Math.random() * 100);
+        const b = Math.floor(Math.random() * 100);
+        const operations = ['+', '-', '*'];
+        const operation = operations[Math.floor(Math.random() * operations.length)];
+
+        const expr = `${a} ${operation} ${b}`;
+        const answer = eval(expr);
+
+        document.getElementById('question').textContent = expr;
+
+        const wrongAnswers = [
+            answer + Math.floor(Math.random() * 10) + 1,
+            answer - (Math.floor(Math.random() * 10) + 1),
+            answer + (Math.floor(Math.random() * 5) - 2)
+        ];
+
+        const allOptions = [...wrongAnswers, answer]
+            .sort(() => Math.random() - 0.5);
+
+        const optionsDiv = document.getElementById('options');
+        optionsDiv.innerHTML = '';
+        allOptions.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.textContent = opt;
+            btn.className = 'option-btn';
+            btn.onclick = () => handleAnswer(opt, answer);
+            optionsDiv.appendChild(btn);
+        });
+
+        document.getElementById('feedback').textContent = '';
+    }
+
+    function handleAnswer(selected, correctAnswer) {
+        const feedback = document.getElementById('feedback');
+        if (selected === correctAnswer) {
+            feedback.textContent = 'Correcto';
+            feedback.style.color = 'green';
+        } else {
+            feedback.textContent = 'Incorrecto.';
+            feedback.style.color = 'red';
+        }
+        setTimeout(generateQuestion, 1000);
+    }
+
+    generateQuestion();
+</script>
+
+</body>
+</html>
